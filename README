@@ -1,0 +1,14 @@
+Arduino WaterSensor
+
+Installation:
+Place watersensor.py and Arduino.py in the same folder
+Edit watersensor.py using a text editor, input a name for the sensor on line 7 and add your email to the email array on line 8 as follows (please keep my email):
+
+name = "Collin's Sensor"
+emails = ["csanborn@berkeley.edu","Other_email@berkeley.edu"]
+
+ensure python 3.X.X is installed on the computer, then run watersensor.py from the command line input the password for the wanglabalerts gmail account, the program will begin running
+
+Use:
+The program checks what the arduino writes to the serial port every second. If the Arduino writes "Water", the program will send an email and wait one hour before checking again.
+The email will contain the name of the sensor as well as the date and time that water was detected.
