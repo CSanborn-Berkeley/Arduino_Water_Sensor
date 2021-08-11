@@ -2,6 +2,7 @@ Arduino WaterSensor
 
 Installation:
 Place watersensor.py and Arduino.py in the same folder
+Verify and Upload WaterSensor.ino on the Arduino
 Edit watersensor.py using a text editor, input a name for the sensor on line 7 and add your email to the email array on line 8 as follows (please keep my email):
 
 name = "Collin's Sensor"
