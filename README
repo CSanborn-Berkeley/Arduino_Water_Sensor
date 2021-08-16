@@ -8,7 +8,11 @@ Edit watersensor.py using a text editor, input a name for the sensor on line 7 a
 name = "Collin's Sensor"
 emails = ["csanborn@berkeley.edu","Other_email@berkeley.edu"]
 
-ensure python 3.X.X is installed on the computer, then run watersensor.py from the command line input the password for the wanglabalerts gmail account, the program will begin running
+Ensure python 3.X.X is installed on the computer, then run watersensor.py from the command line input the password for the wanglabalerts gmail account, the program will begin running
+Packages needed:
+to install packages use the command pip install *name of package* from the command prompt
+pySerial
+
 
 Use:
 The program checks what the arduino writes to the serial port every second. If the Arduino writes "Water", the program will send an email and wait one hour before checking again.

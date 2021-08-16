@@ -7,36 +7,49 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 class Arduino(object):
-    def __init__(self,br=9600):
+    def __init__(self,br=9600,portname=None,vendorid = 1027, productid = 24577):
         #constructor: initializes an arduino object with a specific baud rate.
         #the baud rate (br) must equal the baud rate set in the arduino code.
         #9600 is a very standard value, but we can go higher if we need to.
         self.baud = br
 
         #open the serial port
-        self.ardPort = self.openPort(self.baud)
+        self.ardPort = self.openPort(self.baud,portname,vendorid,productid)
 
         time.sleep(3)
 
-    def openPort(self,br):
+    def openPort(self,br,name,vendorid, productid):
         #Function openPort: opens a USB serial port with a given name.
         #TODO: Make the program search for arduinos, also add exception for port not found.
 
         #initialize a serial port object and return it
-        portname = self.findPort()
+        if name is not None:
+            portname = self.findPortByName(name,vendorid,productid)
+        else:
+            portname = self.findPortByID(vendorid,productid)
         print("PORTNAME:", portname)
         return serial.Serial(portname,br)
 
-    def findPort(self, vendorid = 1027, productid = 24577):
+    def findPortByID(self, vendorid, productid):
         activeports = portlist.comports()
         print("Ports", activeports)
         for port in activeports:
-            print("VID =", port.vid,"  PID =", port.pid)
+            print("VID =", port.vid,"  PID =", port.pid," Name =",port.name)
             if port.vid == vendorid and port.pid == productid:
                 print("Device:", port.device)
                 return port.device
-            else:
-                pass
+
+    def findPortByName(self,name,vendorid = 1027,productid = 24577):
+        activeports = portlist.comports()
+        print("Ports", activeports)
+        for port in activeports:
+            print("VID =", port.vid,"  PID =", port.pid," Name =",port.name)
+            if port.name = name:
+                print("Device:", port.device)
+                return port.device
+
+        print("No port found with the name",name," Finding port by ID using VID =",vendorid," PID =",productid)
+        return findPortByID(self,vendorid,productid)
         #return None
 
     def sendFrame(self,dataStream):
@@ -110,12 +123,19 @@ class Arduino(object):
 
 class WaterSensor(object):
     def __init__(self,name,email_list,email_password,br=9600):
+        # User needs to name the device, provide a list of emails that will be alerted, as well as the pw
         self.name = name
         self.email_list = email_list
-        self.arduino = Arduino(br)
         self.pw = email_password
+        # initialize an Arduino object
+        self.arduino = Arduino(br)
+
 
     def listen(self):
+        #Turns "on" the WaterSensor
+        #While listening, will wait for the word "water" to be passed over the serial port
+
+        #Read 10 bytes at the start since sometimes the arduino will false positive the first reading
         for i in range(10):
             message = self.arduino.getByte()
         print("Starting Monitoring Program")
@@ -136,7 +156,11 @@ class WaterSensor(object):
         message = MIMEMultipart("alternative")
         message["Subject"] = "Water Alert"
         message["From"] = "wanglabalerts@gmail.com"
-        message["To"] = "csanborn@berkeley.edu"
+        to = ""
+        for email in self.email_list:
+            to += email
+            to += ","
+        message["To"] = to
 
         part1 = MIMEText("Water detected at sensor name: {} at {} on {} \nThe sensor will be disabled for one hour.".format(self.name,datetime.now().strftime("%H:%M:%S"),datetime.now().strftime("%m/%d/%Y")), "plain")
 
