@@ -13,5 +13,5 @@ emails = ["csanborn@berkeley.edu"]
 ##########################################
 password = input("Enter email password: ")
 print("Starting Sensor")
-mysensor = WaterSensor(name,emails,password,9600)
+mysensor = WaterSensor(name,emails,password,9600,portname="COM4")
 mysensor.listen()

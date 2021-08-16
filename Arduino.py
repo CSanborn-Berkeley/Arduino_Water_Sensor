@@ -24,8 +24,10 @@ class Arduino(object):
 
         #initialize a serial port object and return it
         if name is not None:
+            print("Searching by name")
             portname = self.findPortByName(name,vendorid,productid)
         else:
+            print("Searching by ID")
             portname = self.findPortByID(vendorid,productid)
         print("PORTNAME:", portname)
         return serial.Serial(portname,br)
@@ -44,7 +46,7 @@ class Arduino(object):
         print("Ports", activeports)
         for port in activeports:
             print("VID =", port.vid,"  PID =", port.pid," Name =",port.name)
-            if port.name = name:
+            if port.name == name:
                 print("Device:", port.device)
                 return port.device
 
@@ -122,13 +124,13 @@ class Arduino(object):
         return bytestream
 
 class WaterSensor(object):
-    def __init__(self,name,email_list,email_password,br=9600):
+    def __init__(self,name,email_list,email_password,br=9600,portname=None,vendorid = 1027, productid = 24577):
         # User needs to name the device, provide a list of emails that will be alerted, as well as the pw
         self.name = name
         self.email_list = email_list
         self.pw = email_password
         # initialize an Arduino object
-        self.arduino = Arduino(br)
+        self.arduino = Arduino(br,portname,vendorid, productid)
 
 
     def listen(self):
